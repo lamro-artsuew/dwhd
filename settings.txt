@@ -38,6 +38,10 @@ Iceberg manages the DWH tables in S3.
 Kafka streams (if needed): IoT events, logs, CDC, etc.
 Kafka Connect jobs send data to MinIO or ClickHouse for real-time.
 ClickHouse ingests/partitions data, stores in MergeTree or Iceberg tables, queryable for analytics.
+
+Superset Connection
+Use ClickHouse native or HTTP connector:
+SQLAlchemy URI: clickhouse+http://dwhapp:UltraStr0ngPW@192.168.10.12:8123/dwh
 Superset connects to ClickHouse for dashboards.
 Prometheus and Grafana monitor health, disk, jobs, lag, etc.
 Loki aggregates logs from all Docker containers for traceability.
