@@ -1,5 +1,6 @@
 # Deploy each stack ONLY on its dedicated host.
 # Use an overlay network (or separate bridges), fix the networks: block so each service knows the LAN IP of its peers.
+# Create dwh_net on all hosts: docker network create --driver=bridge dwh_net
 version: "3.8"
 services:
   minio:
