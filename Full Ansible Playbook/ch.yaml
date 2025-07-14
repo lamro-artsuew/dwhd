@@ -1,0 +1,57 @@
+# roles/clickhouse/tasks/main.yml
+
+- name: Create ClickHouse directories
+  file:
+    path: "/srv/clickhouse/{{ item }}"
+    state: directory
+    owner: clickhouse
+    group: clickhouse
+    mode: '0755'
+  with_items:
+    - data
+    - config
+    - logs
+
+- name: Deploy ClickHouse config.xml
+  template:
+    src: config.xml.j2
+    dest: /srv/clickhouse/config/config.xml
+    owner: clickhouse
+    group: clickhouse
+    mode: '0644'
+
+- name: Ensure ClickHouse docker-compose file exists
+  copy:
+    dest: /srv/clickhouse/docker-compose.yml
+    content: |
+      version: "3.8"
+      services:
+        clickhouse:
+          image: clickhouse/clickhouse-server:24.3
+          user: "1002:1002"
+          volumes:
+            - /srv/clickhouse/data:/var/lib/clickhouse
+            - /srv/clickhouse/config:/etc/clickhouse-server
+            - /srv/clickhouse/logs:/var/log/clickhouse-server
+          environment:
+            CLICKHOUSE_DB: dwh
+            CLICKHOUSE_USER: "{{ clickhouse_user }}"
+            CLICKHOUSE_PASSWORD: "{{ clickhouse_password }}"
+          ports:
+            - "8123:8123"
+            - "9000:9000"
+            - "9009:9009"
+          networks:
+            - {{ dwh_docker_network }}
+          ulimits:
+            nofile:
+              soft: 262144
+              hard: 262144
+      networks:
+        {{ dwh_docker_network }}:
+          external: true
+
+- name: Start ClickHouse with docker-compose
+  shell: docker compose -f /srv/clickhouse/docker-compose.yml up -d
+  args:
+    chdir: /srv/clickhouse
