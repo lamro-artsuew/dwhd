@@ -11,7 +11,7 @@ Monitoring: Prometheus, Grafana, Loki
 All on Docker Compose or Kubernetes (with real users/volumes/network separation)
 Hardened, backups, service wiring, real data flow
 
-1. Server Layout & Planning
+Server Layout & Planning
 3-5 bare metal servers (64+ GB RAM, SSD/NVMe, 16+ vCPU recommended)
 1GbE/10GbE LAN, fixed local IPs (example: 192.168.10.11-20)
 Service separation:
@@ -24,8 +24,20 @@ superset: 192.168.10.16
 monitoring: 192.168.10.17
 backups/NFS: 192.168.10.18
 
-2. Linux User/Group/Dir Structure
+Linux User/Group/Dir Structure
 Each service has its own system user (no root for anything but orchestrator).
 Each service mounts to a dedicated storage directory (on SSD).
 Firewall: Open only service ports, LAN only.
 
+Data Flow (real scenario):
+Airbyte pulls source data (external DB, files, APIs)
+Example: daily extract of ERP data, CSV, etc.
+Writes to MinIO bucket (s3://dwh-landing/2024-07-14/).
+Airflow triggers ETL DAG: reads from MinIO, transforms, writes to ClickHouse (parquet ingestion).
+Iceberg manages the DWH tables in S3.
+Kafka streams (if needed): IoT events, logs, CDC, etc.
+Kafka Connect jobs send data to MinIO or ClickHouse for real-time.
+ClickHouse ingests/partitions data, stores in MergeTree or Iceberg tables, queryable for analytics.
+Superset connects to ClickHouse for dashboards.
+Prometheus and Grafana monitor health, disk, jobs, lag, etc.
+Loki aggregates logs from all Docker containers for traceability.
