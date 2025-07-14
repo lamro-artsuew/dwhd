@@ -1,0 +1,31 @@
+On-Prem DWH CNCF Stack
+Stack:
+Ingestion: Airbyte (ETL)
+Streaming: Kafka (optional, for event/CDC)
+Object Storage: MinIO (S3 API)
+Lakehouse Table Format: Iceberg
+OLAP: ClickHouse
+Orchestration: Airflow
+BI: Superset
+Monitoring: Prometheus, Grafana, Loki
+All on Docker Compose or Kubernetes (with real users/volumes/network separation)
+Hardened, backups, service wiring, real data flow
+
+1. Server Layout & Planning
+3-5 bare metal servers (64+ GB RAM, SSD/NVMe, 16+ vCPU recommended)
+1GbE/10GbE LAN, fixed local IPs (example: 192.168.10.11-20)
+Service separation:
+minio: 192.168.10.11
+clickhouse: 192.168.10.12
+kafka/zookeeper: 192.168.10.13
+airflow: 192.168.10.14
+airbyte: 192.168.10.15
+superset: 192.168.10.16
+monitoring: 192.168.10.17
+backups/NFS: 192.168.10.18
+
+2. Linux User/Group/Dir Structure
+Each service has its own system user (no root for anything but orchestrator).
+Each service mounts to a dedicated storage directory (on SSD).
+Firewall: Open only service ports, LAN only.
+
