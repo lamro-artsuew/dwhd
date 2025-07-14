@@ -1,0 +1,34 @@
+dwh-ansible/
+├── group_vars/
+│   └── all.yml
+├── host_vars/
+│   └── clickhouse.yml
+├── inventory.ini
+├── roles/
+│   ├── clickhouse/
+│   │   ├── tasks/
+│   │   │   └── main.yml
+│   │   ├── templates/
+│   │   │   ├── config.xml.j2
+│   ├── minio/
+│   │   ├── tasks/
+│   │   │   └── main.yml
+│   │   ├── templates/
+│   │   │   └── minio.env.j2
+│   ├── airflow/
+│   │   └── tasks/
+│   │       └── main.yml
+│   ├── airbyte/
+│   │   └── tasks/
+│   │       └── main.yml
+│   ├── superset/
+│   │   └── tasks/
+│   │       └── main.yml
+│   ├── kafka/
+│   │   └── tasks/
+│   │       └── main.yml
+│   ├── monitoring/
+│   │   └── tasks/
+│   │       └── main.yml
+├── site.yml
+├── vault.yml (for secrets, optional)
