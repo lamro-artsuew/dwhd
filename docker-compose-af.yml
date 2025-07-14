@@ -1,0 +1,36 @@
+# /srv/airflow/docker-compose.yml
+# Airflow “DAGs” folder: put your real Python ETL jobs here, connecting Airbyte, ClickHouse, MinIO, Kafka, etc.
+version: "3.8"
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflowDBPW
+      POSTGRES_DB: airflow
+    volumes:
+      - /srv/airflow/pgdata:/var/lib/postgresql/data
+    networks:
+      - dwh_net
+
+  airflow-webserver:
+    image: apache/airflow:2.9.0
+    user: "1005:1005"
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflowDBPW@postgres/airflow
+    volumes:
+      - /srv/airflow/dags:/opt/airflow/dags
+      - /srv/airflow/logs:/opt/airflow/logs
+      - /srv/airflow/plugins:/opt/airflow/plugins
+    ports:
+      - "8080:8080"
+    networks:
+      - dwh_net
+
+networks:
+  dwh_net:
+    external: true
+
