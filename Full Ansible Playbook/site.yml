@@ -1,0 +1,34 @@
+- name: DWH | Deploy MinIO
+  hosts: minio
+  roles:
+    - minio
+
+- name: DWH | Deploy ClickHouse
+  hosts: clickhouse
+  roles:
+    - clickhouse
+
+- name: DWH | Deploy Kafka/Zookeeper
+  hosts: kafka
+  roles:
+    - kafka
+
+- name: DWH | Deploy Airflow
+  hosts: airflow
+  roles:
+    - airflow
+
+- name: DWH | Deploy Airbyte
+  hosts: airbyte
+  roles:
+    - airbyte
+
+- name: DWH | Deploy Superset
+  hosts: superset
+  roles:
+    - superset
+
+- name: DWH | Deploy Monitoring
+  hosts: monitoring
+  roles:
+    - monitoring
