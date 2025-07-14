@@ -1,0 +1,25 @@
+# Deploy each stack ONLY on its dedicated host.
+# Use an overlay network (or separate bridges), fix the networks: block so each service knows the LAN IP of its peers.
+version: "3.8"
+services:
+  minio:
+    image: minio/minio:RELEASE.2024-06-01T00-00-00Z
+    user: "1001:1001"
+    volumes:
+      - /srv/minio/data:/data
+      - /srv/minio/config:/root/.minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "dwhadmin"
+      MINIO_ROOT_PASSWORD: "MyStr0ngS3curePW"
+      MINIO_SERVER_URL: "http://192.168.10.11:9000"
+    command: server /data --console-address ":9001"
+    restart: always
+    networks:
+      - dwh_net
+
+networks:
+  dwh_net:
+    external: true
