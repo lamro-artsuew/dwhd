@@ -1,0 +1,32 @@
+# /srv/superset/docker-compose.yml
+version: "3.8"
+services:
+  superset:
+    image: apache/superset:latest
+    user: "1006:1006"
+    environment:
+      SUPERSET_SECRET_KEY: SuperS3cretKey
+      SUPERSET_DATABASE_URL: postgresql+psycopg2://superset:supersetDBPW@postgres/superset
+    volumes:
+      - /srv/superset:/app
+    ports:
+      - "8088:8088"
+    networks:
+      - dwh_net
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: supersetDBPW
+      POSTGRES_DB: superset
+    volumes:
+      - /srv/superset/pgdata:/var/lib/postgresql/data
+    networks:
+      - dwh_net
+
+networks:
+  dwh_net:
+    external: true
