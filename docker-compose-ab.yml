@@ -1,0 +1,23 @@
+# /srv/airbyte/docker-compose.yml
+version: "3.8"
+services:
+  airbyte-webapp:
+    image: airbyte/webapp:0.58.0
+    user: "1004:1004"
+    ports:
+      - "8000:8000"
+    networks:
+      - dwh_net
+    depends_on:
+      - airbyte-server
+  airbyte-server:
+    image: airbyte/server:0.58.0
+    user: "1004:1004"
+    environment:
+      DATABASE_PASSWORD: AirbytePW
+      DATABASE_USER: airbyte
+    networks:
+      - dwh_net
+networks:
+  dwh_net:
+    external: true
