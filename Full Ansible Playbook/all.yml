@@ -1,0 +1,17 @@
+minio_access_key: "dwhadmin"
+minio_secret_key: "MyStr0ngS3curePW"
+minio_console_port: 9001
+minio_api_port: 9000
+
+clickhouse_user: "dwhapp"
+clickhouse_password: "UltraStr0ngPW"
+
+airflow_db_user: "airflow"
+airflow_db_password: "airflowDBPW"
+
+airbyte_db_password: "AirbytePW"
+
+superset_db_user: "superset"
+superset_db_password: "supersetDBPW"
+
+dwh_docker_network: "dwh_net"
